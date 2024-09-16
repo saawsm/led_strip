@@ -134,7 +134,7 @@ esp_err_t led_strip_fill(led_strip_t* led_strip, uint16_t index, uint16_t count,
       end = led_strip->length;
 
    for (uint16_t i = index; i < end; i++)
-      set_pixel(led_strip, index, color);
+      set_pixel(led_strip, i, color);
 
    return ESP_OK;
 }
