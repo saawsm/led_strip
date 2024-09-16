@@ -24,7 +24,7 @@ typedef struct {
       rmt_channel_handle_t channel;
       rmt_encoder_handle_t encoder;
 
-      uint8_t* buf; // pixel buffer. ordered: r,g,b|r,g,b|r,g,b
+      uint8_t* buf; // pixel buffer. ordered: g,r,b|g,r,b|g,r,b
    } internal;
 } led_strip_t;
 

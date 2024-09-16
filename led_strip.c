@@ -108,8 +108,8 @@ __attribute__((always_inline)) static inline uint8_t scale8_video(uint8_t i, uin
 
 __attribute__((always_inline)) static inline void set_pixel(led_strip_t* led_strip, uint16_t index, rgb_t color) {
    const uint16_t pixel_index = index * COLOR_COMPONENTS_PER_LED;
-   led_strip->internal.buf[pixel_index + 0] = scale8_video(color.r, led_strip->brightness); // red
-   led_strip->internal.buf[pixel_index + 1] = scale8_video(color.g, led_strip->brightness); // green
+   led_strip->internal.buf[pixel_index + 0] = scale8_video(color.g, led_strip->brightness); // green
+   led_strip->internal.buf[pixel_index + 1] = scale8_video(color.r, led_strip->brightness); // red
    led_strip->internal.buf[pixel_index + 2] = scale8_video(color.b, led_strip->brightness); // blue
 }
 
@@ -208,16 +208,16 @@ static esp_err_t rmt_new_led_strip_encoder(rmt_encoder_handle_t* ret_encoder) {
                .level0 = 1,
                .duration0 = 0.3 * RMT_LED_STRIP_RESOLUTION_HZ / 1000000, // T0H=0.3us
                .level1 = 0,
-               .duration1 = 0.9 * RMT_LED_STRIP_RESOLUTION_HZ / 1000000, // T0L=0.9us
+               .duration1 = 0.7 * RMT_LED_STRIP_RESOLUTION_HZ / 1000000, // T0L=0.7us
            },
        .bit1 =
            {
                .level0 = 1,
-               .duration0 = 0.9 * RMT_LED_STRIP_RESOLUTION_HZ / 1000000, // T1H=0.9us
+               .duration0 = 0.7 * RMT_LED_STRIP_RESOLUTION_HZ / 1000000, // T1H=0.7us
                .level1 = 0,
                .duration1 = 0.3 * RMT_LED_STRIP_RESOLUTION_HZ / 1000000, // T1L=0.3us
            },
-       .flags.msb_first = 1                                              // WS2812 transfer bit order: G7...G0 R7...R0 B7...B0
+       .flags.msb_first = 1 // WS2812 transfer bit order: G7...G0 R7...R0 B7...B0
    };
 
    ESP_GOTO_ON_ERROR(rmt_new_bytes_encoder(&bytes_encoder_config, &led_encoder->bytes_encoder), err, TAG, "Create bytes encoder failed");
@@ -225,7 +225,7 @@ static esp_err_t rmt_new_led_strip_encoder(rmt_encoder_handle_t* ret_encoder) {
    rmt_copy_encoder_config_t copy_encoder_config = {};
    ESP_GOTO_ON_ERROR(rmt_new_copy_encoder(&copy_encoder_config, &led_encoder->copy_encoder), err, TAG, "Create copy encoder failed");
 
-   uint32_t reset_ticks = RMT_LED_STRIP_RESOLUTION_HZ / 1000000 * 50 / 2; // reset code duration defaults to 50us
+   uint32_t reset_ticks = RMT_LED_STRIP_RESOLUTION_HZ / 1000000 * 85 / 2; // reset code duration defaults to 85us
    led_encoder->reset_code = (rmt_symbol_word_t){
        .level0 = 0,
        .duration0 = reset_ticks,
